@@ -16,9 +16,10 @@
     "staging:deploy": "yarn delete-old-staging-tags && TAG=`echo staging-$(date +%Y%m%d-%H%M%S)` && git tag $TAG && git push origin $TAG"
   },
   "dependencies": {
-    "@prisma/client": "^4.10.1",
+    "@prisma/client": "4.10.1",
     "@sentry/node": "^7.14.1",
     "@sentry/tracing": "^7.14.1",
+    "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "date-fns": "^2.29.2",
     "express": "^4.17.3",
@@ -41,7 +42,7 @@
     "husky": "^8.0.0",
     "nodemon": "^2.0.15",
     "prettier": "^2.6.1",
-    "prisma": "^3.11.1"
+    "prisma": "4.10.1"
   },
   "_moduleAliases": {
     "@routes": "./routes",
@@ -49,6 +50,7 @@
     "@middleware": "./middleware",
     "@helpers": "./helpers",
     "@database": "./database",
+    "@utils": "./utils",
     "@root": "./"
   },
   "volta": {
