@@ -3,5 +3,6 @@
   "semi": false,
   "arrowParens": "avoid",
   "singleQuote": true,
-  "endOfLine": "auto"
+  "endOfLine": "auto",
+  "plugins": ["prettier-plugin-prisma"]
 }

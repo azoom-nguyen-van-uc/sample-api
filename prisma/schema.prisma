@@ -10,38 +10,42 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
-  id    Int     @id @default(autoincrement())
-  username  String 
-  email String @unique
-  phoneNumber String @unique
-  dob DateTime 
-  gender String
-  password  String 
-  role  String @default("user")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  post      Posts[]
-  comment   Comments[]
+model User {
+  id          Int       @id @default(autoincrement())
+  username    String
+  email       String    @unique
+  phoneNumber String    @unique @map("phone_number")
+  dob         DateTime
+  gender      String
+  password    String
+  role        UserRole  @default(USER)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  posts       Post[]
+  comments    Comment[]
 }
 
-model Posts {
-  id Int @id @default(autoincrement())
-  title String
-  body String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    Int
-  user      Users     @relation(fields: [userId], references: [id])
-  comment     Comments[]
+model Post {
+  id        Int       @id @default(autoincrement())
+  title     String
+  body      String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  authorId  Int       @map("author_id")
+  user      User      @relation(fields: [authorId], references: [id])
+  comments  Comment[]
 }
 
-model Comments {
-  id Int @id @default(autoincrement())
-  body String
-  postId Int
-  userId Int
-  post     Posts     @relation(fields: [postId], references: [id])
-  user      Users     @relation(fields: [userId], references: [id])
+model Comment {
+  id     Int    @id @default(autoincrement())
+  body   String
+  postId Int    @map("post_id")
+  userId Int    @map("user_id")
+  post   Post   @relation(fields: [postId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+}
 
+enum UserRole {
+  ADMIN
+  USER
 }

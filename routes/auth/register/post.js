@@ -8,33 +8,51 @@ import { generatesToken } from '@utils/jwt'
 import { prisma } from '@database'
 
 export default async (req, res) => {
-  const user = {
-    ...req.body,
-    password: await bcrypt.hash(req.body.password, 10),
-  }
+  const { username, email, phoneNumber, dob, gender, password } = req.body
+  const hashPassword = await bcrypt.hash(password, 10)
 
-  const userByEmail = await prisma.users.findUnique({
+  const user = await prisma.user.findFirst({
     where: {
-      email: user.email,
-    },
-  })
-  const userByPhoneNumber = await prisma.users.findUnique({
-    where: {
-      phoneNumber: user.phoneNumber,
+      OR: [{ email }, { phoneNumber }],
     },
   })
 
-  if (userByEmail) {
-    res.status(400).send('Email already exists!')
+  if (user) {
+    if (user.email === email) {
+      return res.status(400).send('Email already exists!')
+    }
+    if (user.phoneNumber === phoneNumber) {
+      return res.status(400).send('Phone number already exists')
+    }
   }
 
-  if (userByPhoneNumber) {
-    res.status(400).send('Phone number already exists')
-  }
+  const registerUser = await prisma.user.create({
+    data: {
+      username,
+      email,
+      phoneNumber,
+      dob,
+      gender,
+      password: hashPassword,
+    },
+  })
 
-  // const registerUser = await prisma.user.create({
-  //   data: user,
-  // })
-  // console.log(registerUser)
-  res.status(200).send('Register success!')
+  if (registerUser) {
+    const accessToken = generatesToken({
+      id: registerUser.id,
+      username,
+      email,
+    })
+
+    res.status(200).send({
+      message: 'Register success!',
+      data: {
+        username,
+        email,
+        accessToken,
+      },
+    })
+  } else {
+    res.status(400).send({ message: 'Register fail!' })
+  }
 }
