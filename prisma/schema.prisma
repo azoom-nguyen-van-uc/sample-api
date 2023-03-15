@@ -14,38 +14,57 @@ model User {
   id          Int       @id @default(autoincrement())
   username    String
   email       String    @unique
-  phoneNumber String    @unique @map("phone_number")
-  dob         DateTime
-  gender      String
+  phoneNumber String?   @unique @map("phone_number")
+  dateOfBirth DateTime? @map("date_of_birth")
+  gender      Gender?
   password    String
   role        UserRole  @default(USER)
+  deleted     Boolean   @default(false)
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
   posts       Post[]
   comments    Comment[]
+
+  @@map("users")
 }
 
 model Post {
   id        Int       @id @default(autoincrement())
+  authorId  Int       @map("author_id")
   title     String
   body      String
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
-  authorId  Int       @map("author_id")
   user      User      @relation(fields: [authorId], references: [id])
   comments  Comment[]
+
+  @@map("posts")
 }
 
 model Comment {
-  id     Int    @id @default(autoincrement())
-  body   String
-  postId Int    @map("post_id")
-  userId Int    @map("user_id")
-  post   Post   @relation(fields: [postId], references: [id])
-  user   User   @relation(fields: [userId], references: [id])
+  id        Int      @id @default(autoincrement())
+  authorId  Int      @map("author_id")
+  postId    Int      @map("post_id")
+  body      String
+  post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("comments")
 }
 
 enum UserRole {
   ADMIN
   USER
+
+  @@map("user_role")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+
+  @@map("gender")
 }

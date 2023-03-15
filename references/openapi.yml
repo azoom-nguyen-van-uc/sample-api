@@ -81,7 +81,7 @@ paths:
                   format: email
                 phoneNumber:
                   type: string
-                dob:
+                dateOfBirth:
                   type: string
                   format: date-time
                 gender:
@@ -99,6 +99,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
         '401':
           description: Unauthorized
           content:
@@ -128,6 +137,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
       requestBody:
         content:
           application/json:
@@ -141,7 +168,7 @@ paths:
                   format: email
                 phoneNumber:
                   type: string
-                dob:
+                dateOfBirth:
                   type: string
                   format: date-time
                 gender:
@@ -162,9 +189,30 @@ paths:
       responses:
         '200':
           description: User Found
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
         '404':
           description: User Not Found
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
       operationId: get-users-userId
       description: Retrieve the information of the user with the matching user ID.
     patch:
@@ -180,8 +228,26 @@ paths:
                 properties:
                   message:
                     type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
         '404':
           description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '403':
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -202,7 +268,7 @@ paths:
                   format: email
                 phoneNumber:
                   type: string
-                dob:
+                dateOfBirth:
                   type: string
                   format: date-time
                 gender:
@@ -224,6 +290,15 @@ paths:
                 properties:
                   message:
                     type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
         '404':
           description: Not Found
           content:
@@ -233,7 +308,16 @@ paths:
                 properties:
                   message:
                     type: string
-  /post:
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /posts:
     get:
       summary: Get post
       tags: []
@@ -248,6 +332,15 @@ paths:
               schema:
                 type: object
                 properties: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
       operationId: get-post
       parameters: []
     post:
@@ -272,6 +365,15 @@ paths:
                 properties:
                   message:
                     type: string
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
       operationId: post-post
       requestBody:
         content:
@@ -285,6 +387,118 @@ paths:
                   type: string
                 authorId:
                   type: integer
+  '/posts/{postId}':
+    parameters:
+      - schema:
+          type: string
+        name: postId
+        in: path
+        required: true
+    patch:
+      summary: Update post
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      operationId: patch-posts-postId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                authorId:
+                  type: integer
+                title:
+                  type: string
+                body:
+                  type: string
+    delete:
+      summary: Delete post
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      operationId: delete-posts-postId
+    get:
+      summary: Get single post
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      operationId: get-posts-postId
 components:
   schemas:
     User:
@@ -296,7 +510,7 @@ components:
           username: string
           email: user@example.com
           phoneNumber: string
-          dob: '2019-08-24T14:15:22Z'
+          dateOfBirth: '2019-08-24T14:15:22Z'
           gender: string
           createdAt: '2019-08-24T14:15:22Z'
           updatedAt: '2019-08-24T14:15:22Z'
@@ -311,7 +525,7 @@ components:
           format: email
         phoneNumber:
           type: string
-        dob:
+        dateOfBirth:
           type: string
           example: '2019-08-24T14:15:22Z'
           format: date-time
@@ -325,10 +539,6 @@ components:
         updatedAt:
           type: string
           format: date-time
-      required:
-        - id
-        - email
-        - phoneNumber
     Post:
       title: Post
       type: object

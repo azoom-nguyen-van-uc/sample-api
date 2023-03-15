@@ -5,11 +5,11 @@ import { prisma } from '@database'
 
 export default async (req, res) => {
   try {
-    const { title, body, authorId } = req.body
+    const { userId } = req.params
 
     const userFound = await prisma.user.findUnique({
       where: {
-        id: +authorId,
+        id: +userId,
       },
     })
 
@@ -17,18 +17,19 @@ export default async (req, res) => {
       return res.status(400).send({ message: 'User not found!' })
     }
 
-    const post = await prisma.post.create({
+    const deleteUser = await prisma.user.update({
+      where: {
+        id: +userId,
+      },
       data: {
-        title,
-        body,
-        authorId,
+        deleted: true,
       },
     })
 
-    if (post) {
-      res.status(200).send({ message: 'Create post success!' })
+    if (deleteUser) {
+      res.status(200).send({ message: 'Delete user success' })
     }
   } catch (error) {
-    res.status(400).send({ message: 'Create post failed!' })
+    res.status(400).send({ message: 'Delete user failed!' })
   }
 }

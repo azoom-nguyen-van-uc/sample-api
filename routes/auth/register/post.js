@@ -8,7 +8,8 @@ import { generatesToken } from '@utils/jwt'
 import { prisma } from '@database'
 
 export default async (req, res) => {
-  const { username, email, phoneNumber, dob, gender, password } = req.body
+  const { username, email, phoneNumber, dateOfBirth, gender, password } =
+    req.body
   const hashPassword = await bcrypt.hash(password, 10)
 
   const user = await prisma.user.findFirst({
@@ -31,7 +32,7 @@ export default async (req, res) => {
       username,
       email,
       phoneNumber,
-      dob,
+      dateOfBirth,
       gender,
       password: hashPassword,
     },
@@ -44,7 +45,7 @@ export default async (req, res) => {
       email,
     })
 
-    res.status(200).send({
+    return res.status(200).send({
       message: 'Register success!',
       data: {
         username,
@@ -52,7 +53,6 @@ export default async (req, res) => {
         accessToken,
       },
     })
-  } else {
-    res.status(400).send({ message: 'Register fail!' })
   }
+  res.status(400).send({ message: 'Register failed!' })
 }

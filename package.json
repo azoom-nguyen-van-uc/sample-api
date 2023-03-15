@@ -54,6 +54,9 @@
     "@utils": "./utils",
     "@root": "./"
   },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "volta": {
     "node": "14.21.0",
     "yarn": "1.22.17"
